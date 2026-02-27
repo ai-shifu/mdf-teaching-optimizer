@@ -1,5 +1,7 @@
 # mdf-teaching-optimizer
 
+[中文文档](./README.zh-CN.md)
+
 Audit and optimize existing MarkdownFlow teaching prompts to improve coverage alignment, interaction effectiveness, and syntax stability.
 
 ## Use Cases
