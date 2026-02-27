@@ -1,0 +1,16 @@
+{
+  "name": "mdf_teaching_optimizer",
+  "description": "Audit and optimize existing MarkdownFlow teaching prompts",
+  "input_schema": {
+    "type": "object",
+    "properties": {
+      "teaching_prompt": {
+        "type": "string"
+      },
+      "source_material": {
+        "type": "string"
+      }
+    },
+    "required": ["teaching_prompt"]
+  }
+}

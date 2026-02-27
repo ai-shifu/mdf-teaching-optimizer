@@ -1,0 +1,26 @@
+{
+  "name": "mdf_teaching_optimizer",
+  "description": "Audit and optimize existing MarkdownFlow teaching prompts",
+  "input_schema": {
+    "type": "object",
+    "properties": {
+      "teaching_prompt": {
+        "type": "string",
+        "description": "Existing MarkdownFlow teaching prompt"
+      },
+      "source_material": {
+        "type": "string",
+        "description": "Optional course source material for coverage checks"
+      }
+    },
+    "required": ["teaching_prompt"]
+  },
+  "output_example": {
+    "summary": "先给结论与风险等级，再给改动点清单。",
+    "findings": {
+      "risk_level": "medium",
+      "interaction_count": 2
+    },
+    "optimized_prompt": "===本节目标..."
+  }
+}
