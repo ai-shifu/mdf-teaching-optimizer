@@ -1,11 +1,24 @@
 ---
 name: mdf-teaching-optimizer
-description: 审计并优化现有 MarkdownFlow 授课提示词，确保与课程资料一致、教学逻辑清晰、互动可执行、变量与语法稳定。Use when user asks to review/optimize MDF teaching prompts, check missing points against source materials, or align chapters with exemplar teaching design.
+description: 审计并优化现有 MarkdownFlow 授课提示词，确保与资料一致、互动可执行、变量语法稳定。Use when user says "检查漏讲/补全/优化现有MDF提示词". Avoid when user asks to generate brand-new course scripts from scratch.
 ---
 
 # MDF 授课提示词优化器
 
 用于“已有授课提示词”的系统优化，不是从零写新课。
+
+## 最小调用模板（copy-paste）
+
+### 最小输入示例
+- 输入：当前授课提示词 + 一份课程资料（用于覆盖比对）。
+
+### 典型输出示例
+- 输出：`audit_report.json`（风险/问题/建议）+ 优化后提示词。
+
+### 常见失败示例（含修复）
+- 失败：只给授课提示词，不给课程资料，无法做覆盖审计。
+- 修复：补充最小资料输入（教案卡片/逐字稿其一）。
+
 
 ## 何时使用
 
@@ -54,38 +67,21 @@ description: 审计并优化现有 MarkdownFlow 授课提示词，确保与课�
 - 结构灵活：禁止机械套统一讲解结构，按章节内容选择最合适的讲述路径。
 - 信息密度约束：优化后信息密度不得低于源资料关键点覆盖密度，不得通过删点换流畅。
 
-## MarkdownFlow 语法规范（必须遵守）
+## 必记10条（详细规则下沉到 references）
 
-1. 变量：
-- 用 `{{var_name}}` 引用变量；
-- 变量名不可含空格；
-- 未赋值变量默认 `"UNKNOWN"`。
+1. 变量引用统一 `{{var_name}}`，变量名不可含空格。
+2. 单节互动总数不超过 5（推荐 3-4）。
+3. 每次变量采集后必须“即时反馈 + 后续分流”。
+4. 禁止未采集变量提前引用（避免 `UNKNOWN` 风险）。
+5. 知识段落之间使用 `---`，每段只完成一个目标。
+6. 固定文本使用 `===...===` 或 `!===...!===`。
+7. 核心知识点遵循“先图后文”：图表达结构，文解释机制与边界。
+8. `*_viewpoint_check` 必须按选项分叉反馈，禁止统一模板。
+9. 输出必须带可追踪索引（源片段/变量/课节映射）。
+10. 课程级产物遵循统一 Schema 与版本头（见 `references/pipeline-schema.md`）。
 
-2. 交互：
-- 单选：`?[%{{var}} 选项A | 选项B | 选项C]`
-- 多选：`?[%{{var}} 选项A || 选项B || 选项C]`
-- 输入：`?[%{{var}} ... 请输入]`
-- 按钮+输入：`?[%{{var}} 选项A | 选项B | ...其他，请填写]`
+详细语法见 `references/markdownflow-spec.md`。
 
-3. 分镜：
-- 用 `---` 分隔模块；
-- 每个模块只完成一个明确目标。
-
-4. 确定性输出：
-- 单行固定文本：`===固定文本===`
-- 多行固定文本围栏：
-```md
-!===
-第1行
-第2行
-!===
-```
-
-5. 普通内容写作原则：
-- 普通内容是“给AI的创作指令”，不是直接给读者的成文；
-- 禁止直接输出整篇文章正文，应指导AI生成正文。
-
-详细说明见 `references/methodology.md`。
 
 ## 优化工作流
 
@@ -129,3 +125,21 @@ description: 审计并优化现有 MarkdownFlow 授课提示词，确保与课�
 - 用不同变量名重复提问同一问题，用户感知为“重复作答”。
 - 图形任务存在但缺少文字讲解，造成“只看图不理解机制”。
 - 为了模板统一牺牲章节特性，导致讲解死板。
+
+
+## 统一输出 Schema（跨skill串联）
+
+统一产物命名建议：
+- `segments.json`
+- `lesson_index.json`
+- `variables_registry.json`
+- `audit_report.json`
+
+每个结构化输出都应包含版本头：
+- `schema_version`
+- `generator_version`
+- `source_hash`
+
+兼容策略：仅追加字段，不破坏既有字段语义；重大变更提升 `schema_version` 主版本。
+
+详见 `references/pipeline-schema.md`。
